@@ -4,8 +4,10 @@ const helmet = require('helmet');
 const cors = require('cors');
 
 require('dotenv').config();
+const bodyParser = require("body-parser");
+require("./services/utils/passport");
 
-const middlewares = require('./middlewares');
+const middlewares = require('./middleware/middlewares');
 const api = require('./api');
 
 const app = express();
@@ -13,15 +15,14 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.json({
-    message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄'
-  });
-});
+//import routes 
+const routes = require('./routes/');
 
-app.use('/api/v1', api);
+//routes middlewares
+app.use('/api/v1', routes);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
