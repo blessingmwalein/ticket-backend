@@ -5,7 +5,7 @@ const adminController = require('../controllers/admin');
 
 const passport = require("passport");
 
-router.get('/admin/role',passport.authenticate('jwt', { session: false }), adminController.getAdminRoles)
+router.get('/admin/role', adminController.getAdminRoles)
 router.get('/admin/role/:id',passport.authenticate('jwt', { session: false }), adminController.getAdminRole)
 router.post('/admin/role/create',passport.authenticate('jwt', { session: false }), adminController.createAdminRoles)
 router.post('/admin/role/update/:id',passport.authenticate('jwt', { session: false }), adminController.updateAdminRole)
