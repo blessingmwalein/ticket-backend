@@ -5,9 +5,8 @@ const cors = require('cors');
 
 require('dotenv').config();
 const bodyParser = require("body-parser");
-require("./services/utils/passport");
 
-const middlewares = require('./middleware/middlewares');
+
 const api = require('./api');
 
 const app = express();
@@ -24,7 +23,5 @@ const routes = require('./routes/');
 //routes middlewares
 app.use('/api/v1', routes);
 
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
 
 module.exports = app;
