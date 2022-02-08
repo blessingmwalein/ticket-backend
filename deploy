@@ -1,5 +1,5 @@
 #!/bin/sh
-ssh -t -t root@bling.codes<<EOF
+ssh -t -t -o StrictHostKeyChecking=no root@bling.codes<<EOF
    cd /home/projects/node/ticket-backend
    git pull origin main
    npm install --production
