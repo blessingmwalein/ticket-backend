@@ -13,6 +13,6 @@ exports.getAdminRoles = async (req, res) => {
     //     }
     // });
     // if (adminRoles) response.successResponse(res, '', 200, adminRoles);
-    return successResponse(res, 'Zvaita Today', 200)
+    return successResponse(res, 'Zvaita Today Masimba', 200)
 
 }
