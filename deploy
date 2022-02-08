@@ -3,6 +3,6 @@ ssh root@bling.codes<<EOF
    cd /home/projects/node/ticket-backend
    git pull origin dev
    npm install --production
-   pm2 restart all
+   pm2 start npm -- start
    exit
 EOF
