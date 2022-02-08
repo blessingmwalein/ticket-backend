@@ -5,12 +5,7 @@ pipeline {
     
   stages {
         
-    stage('Git') {
-      steps {
-        git 'https://github.com/blessingmwalein/ticket-backend.git'
-      }
-    }
-     
+   
     stage('Build') {
       steps {
         sh 'npm install'
