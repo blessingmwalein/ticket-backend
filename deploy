@@ -1,5 +1,5 @@
 #!/bin/sh
-ssh root@bling.codes<<EOF
+sshpass -p xBl1ngmwale ssh root root@bling.codes<<EOF
    cd /home/projects/node/ticket-backend
    git pull origin main
    npm install --production
