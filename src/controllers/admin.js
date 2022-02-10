@@ -8,18 +8,16 @@ const Admin = require('../models/admin');
 
 exports.getAdminRoles = async (req, res) => {
 
-    // const adminRoles = await Role.findAll().catch((err) => {
-    //     console.error("error", err);
-    //     if (err.name === 'SequelizeValidationError') {
-    //         return response.errorRespose(res, error.errors.map(e => e.message), 422)
-    //     } else {
-    //         return response.errorRespose(res, req.body.name, 404)
-    //     }
-    // });
-    // if (adminRoles) response.successResponse(res, '', 200, adminRoles);
-    return [
-        'Blessing Mwale'
-    ]
+    const adminRoles = await Role.findAll().catch((err) => {
+        console.error("error", err);
+        if (err.name === 'SequelizeValidationError') {
+            return response.errorRespose(res, error.errors.map(e => e.message), 422)
+        } else {
+            return response.errorRespose(res, req.body.name, 404)
+        }
+    });
+    if (adminRoles) response.successResponse(res, '', 200, adminRoles);
+
 
 }
 
@@ -87,7 +85,7 @@ exports.createAdmin = async (req, res) => {
     const { user_id, first_name, last_name, phone_number, gender, role_id } = req.body;
 
 
-    const newAdmin = new Admin({user_id, first_name, last_name, phone_number, gender, role_id });
+    const newAdmin = new Admin({ user_id, first_name, last_name, phone_number, gender, role_id });
     const savedAdmin = await newAdmin.save().catch((error) => {
         console.error("error", error);
         if (error.name === 'SequelizeValidationError') {
@@ -138,8 +136,8 @@ exports.getAdmin = async (req, res) => {
             return response.errorRespose(res, [error], 404)
         }
     );
-    
+
     if (admin) {
-        return response.successResponse(res, '', 400, {admin:admin, user: await User.findOne({where : {id : admin.user_id}})});
+        return response.successResponse(res, '', 400, { admin: admin, user: await User.findOne({ where: { id: admin.user_id } }) });
     }
 }
