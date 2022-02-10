@@ -15,6 +15,8 @@ router.post('/admin/create',passport.authenticate('jwt', { session: false }), ad
 router.post('/admin/update/:id',passport.authenticate('jwt', { session: false }), adminController.updateAdmin)
 router.get('/admin',passport.authenticate('jwt', { session: false }), adminController.getAllAdmins)
 router.get('/admin/:id',passport.authenticate('jwt', { session: false }), adminController.getAdmin)
+router.get('/test', adminController.test)
+
 
 
 module.exports = router;

@@ -77,3 +77,4 @@ exports.getEventCategory = async (req, res) => {
         return response.successResponse(res, '', 400, { customer: customer, user: await User.findOne({ where: { id: customer.user_id } }) });
     }
 }
+

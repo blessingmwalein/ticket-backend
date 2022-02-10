@@ -5,7 +5,9 @@ const response = require('../services/utils/response');
 const Role = require('../models/role');
 const Admin = require('../models/admin');
 
-
+exports.test = (req, res) => {
+    response.successResponse(res, 'Deployement Yaita iyi', { 'data': 'wariona data here' });
+}
 exports.getAdminRoles = async (req, res) => {
 
     const adminRoles = await Role.findAll().catch((err) => {
