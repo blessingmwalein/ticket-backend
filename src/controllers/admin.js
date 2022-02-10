@@ -6,7 +6,7 @@ const Role = require('../models/role');
 const Admin = require('../models/admin');
 
 exports.test = (req, res) => {
-    response.successResponse(res, 'Deployement Yaita iyi', { 'data': 'wariona data here' });
+    response.successResponse(res, 'Deployement Yaita iyi',200, { 'data': 'wariona data here' });
 }
 exports.getAdminRoles = async (req, res) => {
 
