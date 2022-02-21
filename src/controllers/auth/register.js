@@ -25,4 +25,7 @@ exports.registerUser = async (req, res, next) => {
     if (savedUser) response.successResponse(res, ['User registered successfully'], 200, newUser);
 } 
 
+exports.saveUser = async (data) => {
 
+    
+}

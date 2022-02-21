@@ -90,3 +90,7 @@ exports.loginAdmin = async (req, res, next) => {
 exports.getUser = async (req, res) => {
     return response.successResponse(res, "Logged In", 200, userWithEmail)
 }
+
+exports.getAdminUsers = async ( req , res) => {
+
+}

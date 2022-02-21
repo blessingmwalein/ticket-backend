@@ -4,6 +4,7 @@ const CustomerType = require('../models/customer_type');
 const response = require('../services/utils/response');
 const Role = require('../models/role');
 const Admin = require('../models/admin');
+
 const bcrypt = require("bcrypt");
 
 exports.test = (req, res) => {
@@ -47,7 +48,7 @@ exports.createAdminRoles = async (req, res) => {
             return response.errorRespose(res, req.body.name, 404)
         }
     });
-    if (savedAdminRole) response.successResponse(res, ['Customer Type Added'], 200, newAdminRole);
+    if (savedAdminRole) response.successResponse(res, ['Admin Role Added'], 200, newAdminRole);
 
 }
 
@@ -85,19 +86,38 @@ exports.deleteAdminRole = async (req, res) => {
 
 //customer functions
 exports.createAdmin = async (req, res) => {
-    const { user_id, first_name, last_name, phone_number, gender, role_id } = req.body;
+    const { user_id, first_name, last_name, phone_number, gender, role_id, email, password } = req.body;
 
-
-    const newAdmin = new Admin({ user_id, first_name, last_name, phone_number, gender, role_id });
-    const savedAdmin = await newAdmin.save().catch((error) => {
-        console.error("error", error);
-        if (error.name === 'SequelizeValidationError') {
-            return response.errorRespose(res, error.errors.map(e => e.message), 422)
+    const alreadyExistsUser = await User.findOne({ where: { email } }).catch(
+        (err) => {
+            console.error('Error', err);
+        }
+    );
+    if (alreadyExistsUser) {
+        return response.errorRespose(res, ['User with email aready exists'], 422);
+    }
+    const newUser = new User({ email, password: `${first_name}.${last_name}123#` });
+    const savedUser = await newUser.save().catch((err) => {
+        console.error("error", err);
+        if (err.name === 'SequelizeValidationError') {
+            return response.errorRespose(res, err.errors.map(e => e.message), 422)
         } else {
             return response.errorRespose(res, req.body.name, 404)
         }
     });
-    if (savedAdmin) response.successResponse(res, ['Admin Account Created'], 200, newAdmin);
+
+    if (savedUser) {
+        const newAdmin = new Admin({ user_id: newUser.id, first_name, last_name, phone_number, gender, role_id });
+        const savedAdmin = await newAdmin.save().catch((error) => {
+            console.error("error", error);
+            if (error.name === 'SequelizeValidationError') {
+                return response.errorRespose(res, error.errors.map(e => e.message), 422)
+            } else {
+                return response.errorRespose(res, req.body.name, 404)
+            }
+        });
+        if (savedAdmin) response.successResponse(res, ['Admin Account Created'], 200, { admin: newAdmin, user: newUser });
+    };
 }
 
 exports.updateAdmin = async (req, res) => {
@@ -157,6 +177,6 @@ exports.getAdmin = async (req, res) => {
     );
 
     if (admin) {
-        return response.successResponse(res, '', 400, { admin: admin, user: await User.findOne({ where: { id: admin.user_id } }) });
+        return response.successResponse(res, '', 200, { admin: admin, user: await User.findOne({ where: { id: admin.user_id } }), role: await Role.findOne({ where: { id: admin.role_id } }) });
     }
 }
