@@ -1,11 +1,11 @@
 
-const EventCategory = require('../models/event_category');
+const Event = require('../models/event');
 const response = require('../services/utils/response');
 
 
-exports.getEventCategories = async (req, res) => {
+exports.getEvents = async (req, res) => {
 
-    const eventCateries = await EventCategory.findAll().catch((err) => {
+    const events = await Event.findAll().catch((err) => {
         console.error("error", err);
         if (err.name === 'SequelizeValidationError') {
             return response.errorRespose(res, error.errors.map(e => e.message), 422)
@@ -13,15 +13,15 @@ exports.getEventCategories = async (req, res) => {
             return response.errorRespose(res, req.body.name, 404)
         }
     });
-    if (eventCateries) response.successResponse(res, '', 200, eventCateries);
+    if (events) response.successResponse(res, '', 200, events);
 
 }
 
-exports.createEventCategory = async (req, res) => {
-    const { name, icon } = req.body;
-
-    const newEventCategory = new EventCategory({ name, icon });
-    const savedEventCategory = await newEventCategory.save().catch((err) => {
+exports.createEvent = async (req, res) => {
+    var { title, event_category_id, desc, event_date_time, payment_deadline, prices, images } = req.body;
+ 
+    const newEvent = new Event({ event_category_id, title, desc, event_date_time, payment_deadline, prices, images });
+    const savedEvent = await newEvent.save().catch((err) => {
         console.error("error", err);
         if (err.name === 'SequelizeValidationError') {
             return response.errorRespose(res, error.errors.map(e => e.message), 422)
@@ -29,15 +29,15 @@ exports.createEventCategory = async (req, res) => {
             return response.errorRespose(res, req.body.name, 404)
         }
     });
-    if (savedEventCategory) response.successResponse(res, ['Successfully Added'], 200, newEventCategory);
+    if (savedEvent) response.successResponse(res, ['Successfully Added'], 200, newEvent);
 
 }
 
-exports.updateEventCategory = async (req, res) => {
-    const { name } = req.body;
+exports.updateEvent = async (req, res) => {
+    const { event_category_id, title, desc, event_date_time, payment_deadline, prices, images } = req.body;
 
-    const updatedEventCategory = await EventCategory.update(
-        { name: name },
+    const updatedEvent = await Event.update(
+        { event_category_id, title, desc, event_date_time, payment_deadline, prices, images},
         { where: { id: req.params.id } }).catch((error) => {
             console.error("error", err);
             if (err.name === 'SequelizeValidationError') {
@@ -46,13 +46,13 @@ exports.updateEventCategory = async (req, res) => {
                 return response.errorRespose(res, req.body.name, 404)
             }
         });
-    if (updatedEventCategory) response.successResponse(res, ['Event Category Updated'], 200, updatedCustomerType);
+    if (updatedEvent) response.successResponse(res, ['Event Updated'], 200, updatedEvent);
 }
 
-exports.deleteEventCategory = async (req, res) => {
-    const { name } = req.body;
+exports.deleteEvent = async (req, res) => {
+    
 
-    const deletedEventCategory = await EventCategory.destroy(
+    const deletedEvent = await Event.destroy(
         { where: { id: req.params.id } }).catch((error) => {
             console.error("error", err);
             if (err.name === 'SequelizeValidationError') {
@@ -61,19 +61,19 @@ exports.deleteEventCategory = async (req, res) => {
                 return response.errorRespose(res, req.body.name, 404)
             }
         });
-    if (deletedEventCategory) response.successResponse(res, ['Event Category Deleted'], 200, deletedEventCategory);
+    if (deletedEvent) response.successResponse(res, ['Event Deleted'], 200, deletedEvent);
 }
 
-exports.getEventCategory = async (req, res) => {
+exports.getEvent = async (req, res) => {
 
-    const eventCategory = await EventCategory.findOne({ where: { id: req.params.id } }).catch(
+    const event = await Event.findOne({ where: { id: req.params.id } }).catch(
         (error) => {
             console.log("Error", EvalError);
             return response.errorRespose(res, [error], 404)
         }
     );
-    if (eventCategory) {
-        return response.successResponse(res, '', 400, { eventCategory: eventCategory });
+    if (event) {
+        return response.successResponse(res, '', 400, event);
     }
 }
 

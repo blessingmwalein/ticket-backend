@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../services/utils/database');
 
-const Venue = sequelize.define('venue', {
+const Event = sequelize.define('event', {
     event_category_id: {
         type: DataTypes.NUMBER,
         allowNull: false,
@@ -10,25 +10,21 @@ const Venue = sequelize.define('venue', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    image: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
     desc: {
         type: DataTypes.TEXT,
         allowNull: false
     },
     event_date_time: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         allowNull: false
     },
-    payement_date_time: {
+    payment_deadline: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     prices: {
         type: DataTypes.JSON,
-        allowNull: true,
+        allowNull: false,
     },
     images: {
         type: DataTypes.JSON,
@@ -43,4 +39,4 @@ const Venue = sequelize.define('venue', {
     }
 );
 
-module.exports = Venue;
+module.exports = Event;

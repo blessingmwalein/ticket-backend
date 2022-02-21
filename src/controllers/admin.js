@@ -4,10 +4,12 @@ const CustomerType = require('../models/customer_type');
 const response = require('../services/utils/response');
 const Role = require('../models/role');
 const Admin = require('../models/admin');
+const bcrypt = require("bcrypt");
 
 exports.test = (req, res) => {
-    response.successResponse(res, 'Deployement Yaita iyi',200, { 'data': 'wariona data here' });
+    response.successResponse(res, 'Deployement Yaita iyi', 200, { 'data': 'wariona data here' });
 }
+
 exports.getAdminRoles = async (req, res) => {
 
     const adminRoles = await Role.findAll().catch((err) => {
@@ -19,8 +21,6 @@ exports.getAdminRoles = async (req, res) => {
         }
     });
     if (adminRoles) response.successResponse(res, '', 200, adminRoles);
-
-
 }
 
 exports.getAdminRole = async (req, res) => {
@@ -66,6 +66,7 @@ exports.updateAdminRole = async (req, res) => {
         });
     if (updatedAdminRole) response.successResponse(res, ['Customer Type Updated'], 200, updatedAdminRole);
 }
+
 exports.deleteAdminRole = async (req, res) => {
     const { name } = req.body;
 
@@ -100,10 +101,25 @@ exports.createAdmin = async (req, res) => {
 }
 
 exports.updateAdmin = async (req, res) => {
-    const { first_name, last_name, phone_number, gender } = req.body;
+    const { first_name, last_name, phone_number, gender, email, password } = req.body;
+
+    const userWithEmail = await User.findOne({ where: { email } }).catch(
+        (err) => {
+            console.error("error", err);
+            if (err.name === 'SequelizeValidationError') {
+                return response.errorRespose(res, err.errors.map(e => e.message), 422)
+            } else {
+                return response.errorRespose(res, req.body.name, 422)
+            }
+        }
+    );;
+
+    if (!await bcrypt.compare(password, userWithEmail.password)) {
+        return response.errorRespose(res, ['Password does not match'], 403);
+    }
 
     const updatedAdmin = await Admin.update(
-        { first_name, last_name, phone_number, gender, dob },
+        { first_name, last_name, phone_number, gender },
         { where: { id: req.params.id } }).catch((error) => {
             console.error("error", err);
             if (err.name === 'SequelizeValidationError') {
@@ -112,7 +128,8 @@ exports.updateAdmin = async (req, res) => {
                 return response.errorRespose(res, req.body.name, 404)
             }
         });
-    if (updatedAdmin) response.successResponse(res, ['Admin Account Updated'], 200, updatedAdmin);
+    const admin = await Admin.findOne({ id: req.params.id })
+    if (updatedAdmin) response.successResponse(res, ['Details Updated'], 200, { user: userWithEmail, admin: admin });
 }
 
 exports.getAllAdmins = async (req, res) => {

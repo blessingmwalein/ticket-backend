@@ -37,13 +37,12 @@ exports.createCustomerTypes = async (req, res) => {
     const savedCustomerType = await newCustomerType.save().catch((err) => {
         console.error("error", err);
         if (err.name === 'SequelizeValidationError') {
-            return response.errorRespose(res, error.errors.map(e => e.message), 422)
+            return response.errorRespose(res, err.errors.map(e => e.message), 422)
         } else {
             return response.errorRespose(res, req.body.name, 404)
         }
     });
     if (savedCustomerType) response.successResponse(res, ['Customer Type Added'], 200, newCustomerType);
-
 }
 
 exports.updateCustomerType = async (req, res) => {
@@ -81,12 +80,20 @@ exports.deleteCustomerType = async (req, res) => {
 exports.createCustomer = async (req, res) => {
     const { name, user_id, first_name, last_name, phone_number, gender, dob, customer_type_id } = req.body;
 
+    const alreadyExistsUser = await User.findOne({ where: { phone_number } }).catch(
+        (err) => {
+            console.error('Error', err);
+        }
+    );
+    if (alreadyExistsUser) {
+        return response.errorRespose(res, ['User with phone number aready exists'], 409);
+    }
 
     const newCustomer = new Customer({ name, user_id, first_name, last_name, phone_number, gender, dob, customer_type_id });
     const savedCustomerType = await newCustomer.save().catch((err) => {
         console.error("error", err);
         if (err.name === 'SequelizeValidationError') {
-            return response.errorRespose(res, error.errors.map(e => e.message), 422)
+            return response.errorRespose(res, err.errors.map(e => e.message), 422)
         } else {
             return response.errorRespose(res, req.body.name, 404)
         }

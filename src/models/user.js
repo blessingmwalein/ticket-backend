@@ -7,6 +7,9 @@ const User = sequelize.define('user', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: {
+            msg: 'This email is already taken'
+        },
         validate: {
             isEmail: {
                 args: true,
